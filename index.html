@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Covid-19 Dashboard</title>
+  <meta name="description" content="Covid-19 Dashboard">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="js/script.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+
+  <div class="header-wrapper">
+    <h1>Covid-19 Dashboard</h1>
+    <div class="header-labels"><a href="https://github.com/siebenrock/covid" target="_blank">GitHub Repository</a>,
+      <a href="https://www.arcgis.com/home/item.html?id=dd4580c810204019a7b8eb3e0b329dd6" target="_blank">RKI Data</a>
+    </div>
+    <div class="header-labels" id="status"></div>
+  </div>
+
+  <div class="grid-wrapper" id="grid">
+
+    <div class="selection-wrapper">
+      <div>
+        <div class="btn-group btn-group-toggle" style="opacity: 0.7;" data-toggle="buttons" role="group" aria-label="Basic example">
+          <label class="btn btn-sm btn-outline-secondary active">
+            <input type="radio" name="options" id="select_type_cases" autocomplete="off" checked>Fälle
+          </label>
+          <label class="btn btn-sm btn-outline-secondary">
+            <input type="radio" name="options" id="select_type_deaths" autocomplete="off">Todesfälle
+          </label>
+        </div>
+      </div>
+      <div class="btn-group btn-group-toggle" style="opacity: 0.7;" data-toggle="buttons" role="group" aria-label="Basic example">
+        <label class="btn btn-sm btn-outline-secondary">
+          <input type="radio" name="options" id="select_days_10" autocomplete="off">10
+        </label>
+        <label class="btn btn-sm btn-outline-secondary active">
+          <input type="radio" name="options" id="select_days_30" autocomplete="off" checked>30
+        </label>
+        <label class="btn btn-sm btn-outline-secondary">
+          <input type="radio" name="options" id="select_days_90" autocomplete="off">90 Tage
+        </label>
+      </div>
+    </div>
+
+    <div class="row" class="top-row">
+      <div class="col-xs-6 col-md-6 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="deutschland_time">
+          <h5>Deutschland</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper" style="height: 398px">
+        <div class="chart-inner" id="deutschland_age">
+          <h5>Altersgruppen</h5>
+          <p class="chart-label">Gesamter Zeitraum</p>
+          <div class="chart donut-chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper" style="height: 398px">
+        <div class="chart-inner" id="deutschland_gender">
+          <h5>Geschlecht</h5>
+          <p class="chart-label">Gesamter Zeitraum</p>
+          <div class="chart donut-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="baden-wuerttemberg">
+          <h5>Baden-Württemberg</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="bayern">
+          <h5>Bayern</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="berlin">
+          <h5>Berlin</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="brandenburg">
+          <h5>Brandenburg</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="bremen">
+          <h5>Bremen</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="hamburg">
+          <h5>Hamburg</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="hessen">
+          <h5>Hessen</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="mecklenburg-vorpommern">
+          <h5>Mecklenburg-Vorpommern</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="niedersachsen">
+          <h5>Niedersachsen</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="nordrhein-westfalen">
+          <h5>Nordrhein-Westfalen</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="rheinland-pfalz">
+          <h5>Rheinland-Pfalz</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="saarland">
+          <h5>Saarland</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="sachsen">
+          <h5>Sachsen</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="sachsen-anhalt">
+          <h5>Sachsen-Anhalt</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="schleswig-holstein">
+          <h5>Schleswig-Holstein</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
+        <div class="chart-inner" id="thueringen">
+          <h5>Thueringen</h5>
+          <p class="chart-label"></p>
+          <div class="chart"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
