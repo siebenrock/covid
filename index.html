@@ -8,9 +8,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="js/script.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -26,10 +23,21 @@
     <div class="header-labels" id="status"></div>
   </div>
 
-  <div class="grid-wrapper" id="grid">
+  <div class="grid-wrapper no-select" id="grid">
 
     <div class="selection-wrapper">
-      <div>
+      <div style="display: flex; flex-wrap: nowrap;">
+        <div class="dropdown show" style="margin-right: 12px;">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle inactive" style="opacity: 0.7;" type="button" data-toggle="dropdown">Deutschland
+            <span class="caret"></span></button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="dropdown_bundesland">
+            <li>
+              <p class="dropdown-item" href="#">Deutschland</p>
+            </li>
+            <div class="dropdown-divider"></div>
+          </ul>
+        </div>
+
         <div class="btn-group btn-group-toggle" style="opacity: 0.7;" data-toggle="buttons" role="group" aria-label="Basic example">
           <label class="btn btn-sm btn-outline-secondary active">
             <input type="radio" name="options" id="select_type_cases" autocomplete="off" checked>Fälle
@@ -54,21 +62,21 @@
 
     <div class="row" class="top-row">
       <div class="col-xs-6 col-md-6 col-sm-12 chart-wrapper">
-        <div class="chart-inner" id="deutschland_time">
+        <div class="chart-inner" id="top_time">
           <h5>Deutschland</h5>
           <p class="chart-label"></p>
           <div class="chart"></div>
         </div>
       </div>
       <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper" style="height: 398px">
-        <div class="chart-inner" id="deutschland_age">
+        <div class="chart-inner" id="top_age">
           <h5>Altersgruppen</h5>
           <p class="chart-label">Gesamter Zeitraum</p>
           <div class="chart donut-chart"></div>
         </div>
       </div>
       <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper" style="height: 398px">
-        <div class="chart-inner" id="deutschland_gender">
+        <div class="chart-inner" id="top_gender">
           <h5>Geschlecht</h5>
           <p class="chart-label">Gesamter Zeitraum</p>
           <div class="chart donut-chart"></div>
@@ -193,7 +201,7 @@
       </div>
       <div class="col-xs-3 col-md-3 col-sm-12 chart-wrapper">
         <div class="chart-inner" id="thueringen">
-          <h5>Thueringen</h5>
+          <h5>Thüringen</h5>
           <p class="chart-label"></p>
           <div class="chart"></div>
         </div>
@@ -202,6 +210,11 @@
 
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </body>
 
 </html>

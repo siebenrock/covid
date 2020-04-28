@@ -2,8 +2,8 @@ let URL = window.location.href.includes("index.html") ? "http://0.0.0.0:4000" : 
 
 let bundeslaender = [];
 let last_update = "";
-let selected_type = "cases"
-let selected_days = 30
+let selected_type = "cases";
+let selected_days = 30;
 
 const translate = {
   "cases": "Fälle",
@@ -14,7 +14,13 @@ const translate = {
   "W": "Frauen",
   "unbekannt": "Unbekannt",
 };
-const split_options = ["age", "gender"]
+const umlauts = {
+  'ae': 'ä',
+  'oe': 'ö',
+  'ue': 'ü',
+  'ss': 'ß'
+};
+const split_options = ["age", "gender"];
 
 let current_charts = {};
 
@@ -26,8 +32,8 @@ async function get_last_update() {
   } catch (e) {
     console.error(e);
     $("#grid").hide();
-  }
-}
+  };
+};
 
 async function list_bundeslaender() {
   try {
@@ -36,8 +42,33 @@ async function list_bundeslaender() {
     return res.data;
   } catch (e) {
     error_handling(e)
-  }
-}
+  };
+};
+
+async function build_dropdown(list) {
+
+  // Insert Bundesländer
+  list.forEach((item) => {
+    let bundesland = item.toLowerCase().split("-").map((str) => str.charAt(0).toUpperCase() + str.substring(1)).join(" ");
+    bundesland = bundesland.replace(/ae|oe|ue|ss/gi, (str) => {
+      return umlauts[str];
+    });
+    $("#dropdown_bundesland").append("<li><p class='dropdown-item' id='select_state_" + item + "' href='#'>" + bundesland + "</p></li>");
+  });
+
+  // Enable dropdown
+  $(".dropdown-submenu").on("click", (e) => {
+    $(this).next("ul").toggle();
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+  // Setup dropdown listener
+  $(document).on("click", 'p[id^="select_state_"]', function(e) {
+    bundesland = this.id.slice(13);
+    console.log("selected", bundesland);
+  });
+};
 
 async function get_timeline(params) {
   try {
@@ -48,8 +79,8 @@ async function get_timeline(params) {
     return res.data
   } catch (e) {
     error_handling(e)
-  }
-}
+  };
+};
 
 async function get_share(params) {
   try {
@@ -60,8 +91,8 @@ async function get_share(params) {
     return res.data
   } catch (e) {
     error_handling(e)
-  }
-}
+  };
+};
 
 function error_handling(e) {
   $("#grid").hide();
@@ -71,11 +102,11 @@ function error_handling(e) {
   } else {
     console.log(e.response);
     $("#status").html("Error");
-  }
-}
+  };
+};
 
-async function draw_timeline(update, params) {
-  let data = await get_timeline(params);
+function draw_timeline(data, params, update) {
+  console.log(data);
   let total_str = data.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
   var options_line = {
@@ -137,7 +168,7 @@ async function draw_timeline(update, params) {
   };
 
   if (!params.bundesland) {
-    params.bundesland = "deutschland_time"
+    params.bundesland = "top_time"
   }
 
   $("#" + params.bundesland).innerHTML = '';
@@ -148,17 +179,20 @@ async function draw_timeline(update, params) {
   } else {
     current_charts[params.bundesland] = new ApexCharts(document.querySelector("#" + params.bundesland + " > .chart"), options_line);
     current_charts[params.bundesland].render();
-  }
+  };
 
-}
+};
 
-async function draw_donut(update, params) {
-  let data = await get_share(params);
+function draw_donut(data, params, update) {
   let values = Object.values(data)
+  let labels = [];
+  Object.keys(data).forEach(function(label, index) {
+    labels.push(label in translate ? translate[label] : label);
+  });
 
   var options_donut = {
     series: values,
-    labels: Object.keys(data),
+    labels,
     chart: {
       type: 'donut',
       width: $(window).width() > 1700 ? '75%' : '100%'
@@ -218,16 +252,58 @@ async function draw_donut(update, params) {
     },
   };
 
-  $("#deutschland_" + params.by).innerHTML = '';
+  $("#top_" + params.by).innerHTML = '';
 
   if (update === true) {
-    current_charts["deutschland_" + params.by].updateOptions(options_donut)
+    current_charts["top_" + params.by].updateOptions(options_donut)
   } else {
-    current_charts["deutschland_" + params.by] = new ApexCharts(document.querySelector("#deutschland_" + params.by + " > .chart"), options_donut);
-    current_charts["deutschland_" + params.by].render();
-  }
+    current_charts["top_" + params.by] = new ApexCharts(document.querySelector("#top_" + params.by + " > .chart"), options_donut);
+    current_charts["top_" + params.by].render();
+  };
 
-}
+};
+
+function draw_top_row(params, update = false) {
+
+  // Draw timeline
+  get_timeline(params).then(response => {
+    draw_timeline(response, params, update);
+  });;
+
+  // Draw donut
+  split_options.forEach((split_option) => {
+    get_share({
+      ...params,
+      by: split_option
+    }).then(response => {
+      draw_donut(response, {
+        ...params,
+        by: split_option
+      }, update);
+    });
+  });
+
+};
+
+function draw_grid(params, update = false) {
+
+  // Draw timelines
+  bundeslaender.forEach((bundesland) => {
+    get_timeline({
+      ...params,
+      bundesland: bundesland
+    }).then(res => {
+      console.log(res);
+      draw_timeline(res, {
+        ...params,
+        bundesland: bundesland
+      }, update);
+    })
+
+  });
+
+};
+
 
 async function init() {
 
@@ -236,33 +312,26 @@ async function init() {
   last_update_str = last_update === undefined ? "Network Error" : "Update " + last_update;
   $("#status").html(last_update_str);
 
-  // Draw aggregated charts
-  draw_timeline(update = false, {
+  draw_top_row({
     type: selected_type,
     days: selected_days,
   });
 
-  split_options.forEach((element, index) => {
-    draw_donut(update = false, {
-      type: selected_type,
-      by: element,
-    });
-  });
+  // Get Bundesländer
+  list_bundeslaender().then(response => {
+    bundeslaender = response;
 
-  // Draw charts
-  bundeslaender = await list_bundeslaender();
-  bundeslaender.forEach((element, index, array) => {
-    const params = {
-      bundesland: element,
+    draw_grid({
       type: selected_type,
       days: selected_days,
-    };
-    draw_timeline(update = false, params);
+    });
+
+    build_dropdown(bundeslaender);
   });
 
-}
+};
 
-$(document).on('change', 'input:radio[id^="select_"]', function(e) {
+$(document).on("change", 'input:radio[id^="select_"]', (e) => {
   let changed = this.id.slice(7, 11);
   let selected = this.id.slice(12);
 
@@ -275,32 +344,19 @@ $(document).on('change', 'input:radio[id^="select_"]', function(e) {
       break;
     default:
       break;
-  }
+  };
 
-  // Update aggregated charts
-  draw_timeline(update = true, {
+  draw_top_row({
     type: selected_type,
     days: selected_days,
-  });
+  }, update = true)
 
-  if (changed === "type") {
-    split_options.forEach((element, index) => {
-      draw_donut(update = true, {
-        type: selected_type,
-        by: element,
-      });
-    });
-  }
+  draw_grid({
+    bundesland: element,
+    type: selected_type,
+    days: selected_days,
+  }, update = true);
 
-  // Update charts
-  bundeslaender.forEach((element, index, array) => {
-    const params = {
-      bundesland: element,
-      type: selected_type,
-      days: selected_days,
-    };
-    draw_timeline(update = true, params);
-  });
 });
 
 

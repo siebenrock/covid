@@ -1,5 +1,5 @@
 body {
-  background-color: #0D0D13;
+  background-color: #0d0d13;
   color: silver;
   padding: 40px 0px;
 }
@@ -58,14 +58,6 @@ a:hover {
   border-radius: 10px;
   overflow: hidden;
   padding: 1px 12px 2px 1px;
-  -webkit-user-select: none;
-  /* Safari */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* IE10+/Edge */
-  user-select: none;
-  /* Standard */
 }
 
 .donut-chart {
@@ -83,10 +75,51 @@ a:hover {
   margin: 2px 0px 2px 16px;
 }
 
+.show>.btn-outline-secondary.dropdown-toggle {
+  background-color: transparent;
+}
+
+.dropdown-menu {
+  background-color: #eee;
+  padding: 0px 0px 2px 0px;
+}
+
+.dropdown-item {
+  padding: 4px 10px;
+  margin: 0px;
+  color: dimgray;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background-color: #ddd;
+}
+
+.dropdown-item:active {
+  color: black;
+}
+
+.dropdown-divider {
+  border-color: gainsboro;
+  margin: 0px;
+  padding: 0px;
+}
+
 #grid .apexcharts-tooltip {
   color: dimgrey;
 }
 
 #grid .donut-chart .apexcharts-tooltip {
   color: gainsboro;
+}
+
+.no-select {
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
 }
