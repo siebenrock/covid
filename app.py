@@ -1,6 +1,5 @@
 import atexit
 import io
-import re
 
 import pandas as pd
 import requests
@@ -62,9 +61,11 @@ def update():
 
             error = {"status": False, "message": "File retrieved"}
             return r, error
-        except:
+        except Exception as e:
             error = {"status": True, "message": "Error retrieving file"}
-            print(error["message"])
+            PushoverClient.send_message(
+                f"{error['message']} + {e}", title="Covid")
+            print(f"{error['message']} + {e}")
             return False, error
 
     r, error = request_file()
@@ -107,13 +108,14 @@ def update():
         for split_option in list(split_options.keys()):
             split_options[split_option] = data[translate[split_option]]
 
-    except:
+    except Exception as e:
         error = {"status": True, "message": "Error while cleaning data"}
-        print(error["message"])
-        return jsonify(error["message"]), 400
+        PushoverClient.send_message(f"{error['message']} + {e}", title="Covid")
+        return jsonify(f"{error['message']} + {e}"), 400
 
-    PushoverClient.send_message("Data updated", title="Covid")
-    return jsonify(f"Data loaded from RKI (last update: {last_updated.strftime(query_date_f)})"), 200
+    message = f"Data loaded from RKI (last update: {last_updated.strftime(query_date_f)})"
+    PushoverClient.send_message(message, title="Covid")
+    return jsonify(message), 200
 
 # Endpoint to load local data file
 @app.route("/load_file", methods=["GET"])
@@ -127,11 +129,14 @@ def load_file():
         for split_option in list(split_options.keys()):
             split_options[split_option] = data[translate[split_option]]
 
-        PushoverClient.send_message("Data loaded from file", title="Covid")
-        return jsonify(f"Data loaded from file (last update: {last_updated.strftime(query_date_f)})"), 200
+        message = f"Data loaded from file (last update: {last_updated.strftime(query_date_f)})"
+        PushoverClient.send_message(message, title="Covid")
+        return jsonify(message), 200
 
-    except:
-        return jsonify("Error while loading data from file"), 400
+    except Exception as e:
+        PushoverClient.send_message(
+            f"Error while loading data from file {e}", title="Covid")
+        return jsonify(f"Error while loading data from file {e}"), 400
 
 # Endpoint to return last updated date
 @app.route("/last_update", methods=["GET"])
@@ -202,9 +207,18 @@ def get_timeline():
     if len(query) == 0:
         return jsonify("No data found, check parameter"), 400
 
-    # Get total
+    # Calculate total
     total = query[query_column].sum()
 
+    # Calculate shares
+    shares = {}
+    for option in split_options:
+        share = query.groupby(translate[option])[query_column].sum()
+        share = share.reindex(split_options[option], fill_value=0)
+        share.sort_index(inplace=True)
+        shares[option] = share.to_dict()
+
+    # Calculate timeline
     query_len = 30 if "days" not in request.args else int(
         request.args.get("days"))
     first_case = pd.to_datetime(df["Refdatum"].min(), format="%Y-%m-%d")
@@ -223,7 +237,8 @@ def get_timeline():
 
     query_dict = {
         "total": int(total),
-        "timeline": timeline
+        "timeline": timeline,
+        "shares": shares,
     }
 
     return jsonify(query_dict), 200

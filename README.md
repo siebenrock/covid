@@ -2,7 +2,7 @@
 *Shelter-in-place one day build project*
 
 
-- https://kaisiebenrock.com/covid/
+- [covid.kaisiebenrock.com](https://covid.kaisiebenrock.com)
 - Backend: [py](https://github.com/siebenrock/covid/blob/master/app.py)
 - Frontend: [html](https://github.com/siebenrock/covid/blob/master/index.html), [css](https://github.com/siebenrock/covid/blob/master/css/style.css), [js](https://github.com/siebenrock/covid/blob/master/js/script.js)
 
