@@ -1,0 +1,161 @@
+body {
+  background-color: #0d0d13;
+  color: silver;
+  padding: 40px 0px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h5 {
+  margin: 16px 0px 0px 16px;
+  font-size: 16px;
+  opacity: 0.85;
+}
+
+a {
+  color: grey;
+  font-size: 12px;
+}
+
+a:hover {
+  color: silver;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.header-labels {
+  color: grey;
+  font-size: 12px;
+  height: 17px;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.selection-wrapper {
+  display: flex;
+}
+
+.selection-wrapper-no-geo {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.dashboard-wrapper {
+  padding: 30px 24px;
+}
+
+.chart-wrapper {
+  padding: 12px 11px;
+}
+
+#grid .chart-inner {
+  min-height: 313px;
+}
+
+.chart-inner {
+  height: 100%;
+  background-color: #191a24;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 1px 12px 2px 1px;
+}
+
+.h-clickable {
+  cursor: pointer;
+  z-index: 1;
+}
+
+.donut-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 22px 0px 20px 10px;
+  opacity: 0.9;
+}
+
+.chart-label {
+  font-size: 11px;
+  font-weight: 300;
+  opacity: 0.7;
+  margin: 2px 0px 2px 16px;
+}
+
+.show>.btn-outline-secondary.dropdown-toggle {
+  background-color: transparent;
+  color: #777;
+}
+
+.dropdown {
+  padding-bottom: 10px;
+  z-index: 5;
+}
+
+.dropdown-menu {
+  z-index: 10;
+}
+
+.btn-group {
+  opacity: 0.85;
+}
+
+.dropdown-menu {
+  background-color: #eee;
+  padding: 0px 0px 2px 0px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 4px 10px;
+  margin: 0px;
+  color: dimgray;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background-color: #ddd;
+}
+
+.dropdown-item:active {
+  color: black;
+}
+
+.dropdown-divider {
+  border-color: gainsboro;
+  margin: 0px;
+  padding: 0px;
+}
+
+#dashboard .apexcharts-tooltip {
+  color: dimgrey;
+}
+
+#dashboard .donut-chart .apexcharts-tooltip {
+  color: gainsboro;
+}
+
+.no-select {
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
+}
+
+@media only screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+  .selection-wrapper {
+    display: inline;
+  }
+}
