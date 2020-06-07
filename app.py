@@ -74,7 +74,7 @@ def update():
             encoding = "utf-8"
             df = pd.read_csv(io.StringIO(r.content.decode(
                 encoding)), parse_dates=DATE_COLUMNS)
-        except UnicodeDecodeError as e:
+        except UnicodeDecodeError:
             encoding = "windows-1252"
             df = pd.read_csv(io.StringIO(r.content.decode(
                 encoding)), parse_dates=DATE_COLUMNS)
@@ -105,7 +105,19 @@ def update():
         last_updated = pd.to_datetime(
             data["Datenstand"].max(), format=QUERY_DATE_FORM)
         first_case = pd.to_datetime(data["Refdatum"].min(), format="%Y-%m-%d")
+
+        # Save file
         data.to_csv("data/" + last_updated.strftime(QUERY_DATE_FORM) + ".csv")
+
+        # Clean up old files
+        files = sorted(os.listdir(os.getcwd() + "/data"), reverse=True)
+        for file in files[7:]:
+            file = os.getcwd() + "/data/" + file
+            if os.path.exists(file):
+                os.remove(file)
+            else:
+                print("Tried to delete file that does not exist")
+
         for split_option in list(SPLIT_OPTIONS.keys()):
             SPLIT_OPTIONS[split_option] = data[TRANSLATE[split_option]]
 
@@ -134,8 +146,7 @@ def load_file(file):
 
         # Clean up old files
         files = sorted(os.listdir(os.getcwd() + "/data"), reverse=True)
-        files.remove(".DS_Store")
-        for file in files[14:]:
+        for file in files[7:]:
             file = os.getcwd() + "/data/" + file
             if os.path.exists(file):
                 os.remove(file)
@@ -306,7 +317,7 @@ def filter_time(df, args):
         start_date = max(
             last_updated - pd.DateOffset(int(args.get("days"))), first_case)
     else:
-        start_date = first_case_
+        start_date = first_case
 
     # Filter dataframe
     df = df[pd.to_datetime(

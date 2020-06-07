@@ -3,4 +3,5 @@
 analytics.py
 analytics.md
 data/*
+notes/*
 __pycache__/*
