@@ -6,8 +6,7 @@
 - Backend: [py](https://github.com/siebenrock/covid/blob/master/app.py)
 - Frontend: [html](https://github.com/siebenrock/covid/blob/master/index.html), [css](https://github.com/siebenrock/covid/blob/master/css/style.css), [js](https://github.com/siebenrock/covid/blob/master/js/script.js)
 
-
-![screen](screen.png)
+![covid-dashboard](covid-dashboard.png)
 
 
 ### API
