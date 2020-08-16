@@ -313,7 +313,7 @@ def clean_string(s):
 
 
 def filter_time(df, args):
-    if "days" in args:
+    if "days" in args and args.get("days") != "all":
         start_date = max(
             last_updated - pd.DateOffset(int(args.get("days"))), first_case)
     else:
